@@ -9,15 +9,20 @@ import retrofit2.http.Query
 interface NewsApi {
     @GET("top-headlines")
     suspend fun getTopHeadlines(
-        @Query("country") country: String,
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int = 30,
+        @Query("sources") sources: String = "abc-news, bbc-news",
+        @Query("sortBy") sortBy: String? = "publishedAt",
         @Query("apiKey") apiKey: String = Constants.API_KEY,
     ): Response<NewsResponse>
 
     @GET("everything")
     suspend fun getEverything(
-        @Query("q") query: String,
+        @Query("q") query: String?,
+        @Query("sources") sources: String = "abc-news, bbc-news",
         @Query("page") page: Int,
-        @Query("sortBy") sortBy: String? = null,
+        @Query("pageSize") pageSize: Int = 30,
+        @Query("sortBy") sortBy: String? = "publishedAt",
         @Query("apiKey") apiKey: String = Constants.API_KEY,
     ): Response<NewsResponse>
 }

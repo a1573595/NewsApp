@@ -11,7 +11,7 @@ data class NewsResponse(
 
 @Serializable
 data class ArticleRaw(
-    val author: String,
+    val author: String?,
     val title: String,
     val description: String?,
     val url: String,

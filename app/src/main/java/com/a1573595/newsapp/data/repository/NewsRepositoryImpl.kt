@@ -15,7 +15,8 @@ class NewsRepositoryImpl @Inject constructor(
     //    override suspend fun getTopHeadlines(country: String): Response<NewsResponse> = withContext(ioDispatcher) {
 //        newsApi.getTopHeadlines(country)
 //    }
-    override suspend fun getTopHeadlines(country: String): Response<NewsResponse> = newsApi.getTopHeadlines(country)
+    override suspend fun getTopHeadlines(page: Int): Response<NewsResponse> = newsApi.getTopHeadlines(page)
 
-//    override suspend fun getEverything(query: String): Response<NewsResponse> = newsApi.getEverything(query)
+    override suspend fun getEverything(query: String, page: Int): Response<NewsResponse> =
+        newsApi.getEverything(query = query, page = page)
 }

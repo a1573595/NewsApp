@@ -4,7 +4,7 @@ import com.a1573595.newsapp.data.model.NewsResponse
 import retrofit2.Response
 
 interface NewsRepository {
-    suspend fun getTopHeadlines(country: String): Response<NewsResponse>
+    suspend fun getTopHeadlines(page: Int): Response<NewsResponse>
 
-//    suspend fun getEverything(query: String): Response<NewsResponse>
+    suspend fun getEverything(query: String, page: Int): Response<NewsResponse>
 }

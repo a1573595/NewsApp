@@ -23,9 +23,9 @@ class ArticleUseCase @Inject constructor(
 ) {
 //    operator fun invoke(country: String = "us"): Flow<AsyncValue<List<Article>>>
 
-    fun getTopHeadlines(country: String = "us"): Flow<AsyncValue<List<Article>>> = flow {
+    fun getTopHeadlines(): Flow<AsyncValue<List<Article>>> = flow {
         emit(AsyncValue.Loading)
-        val newsResponse = newsRepository.getTopHeadlines(country)
+        val newsResponse = newsRepository.getTopHeadlines(page = 1)
 
         if (newsResponse.isSuccessful) {
             val articleList = newsResponse.body()?.articles?.map { e -> mapArticleRawToArticle(e) } ?: emptyList()
@@ -36,15 +36,14 @@ class ArticleUseCase @Inject constructor(
                 emit(AsyncValue.Error(Exception("Nothing to show")))
             }
         } else {
-            emit(AsyncValue.Error(Exception("Fetch failed")))
-            newsResponse.errorBody()
+            emit(AsyncValue.Error(Exception(newsResponse.errorBody()?.string() ?: "Fetch failed")))
         }
     }.catch {
         emit(AsyncValue.Error(it))
     }.flowOn(Dispatchers.IO)
 
     private fun mapArticleRawToArticle(articleRaw: ArticleRaw): Article = Article(
-        author = articleRaw.author,
+        author = articleRaw.author ?: "Unknown Author",
         title = articleRaw.title,
         description = articleRaw.description ?: "No Description Available",
         url = articleRaw.url,
