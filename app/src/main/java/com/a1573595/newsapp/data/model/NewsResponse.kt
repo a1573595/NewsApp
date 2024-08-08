@@ -17,4 +17,5 @@ data class ArticleRaw(
     val url: String,
     val urlToImage: String?,
     val publishedAt: String,
+    val content: String?,
 )

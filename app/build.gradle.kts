@@ -72,6 +72,10 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.androidx.material.icons.extended)
 
+    // Paging3
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.paging.compose)
+
     // Dagger Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)

@@ -1,10 +1,8 @@
 package com.a1573595.newsapp.ui.screen
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -24,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -34,10 +31,8 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,24 +41,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
-import com.a1573595.newsapp.common.AsyncValue
 import com.a1573595.newsapp.domain.model.Article
-import kotlinx.coroutines.launch
+import com.a1573595.newsapp.ui.component.NoMoreFooter
+import com.a1573595.newsapp.ui.component.ErrorBody
+import com.a1573595.newsapp.ui.component.LoadMoreFooter
+import com.a1573595.newsapp.ui.component.LoadingBody
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopHeadlinesScreen(
     viewModel: NewsViewModel = hiltViewModel()
 ) {
-    val scope = rememberCoroutineScope()
+//    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -77,35 +76,68 @@ fun TopHeadlinesScreen(
             )
         }
     ) { innerPadding ->
-        val articlesState by viewModel.articlesState.collectAsState()
-        val isRefreshing by viewModel.isRefresh
+        val articleList = viewModel.articlePagingData.collectAsLazyPagingItems()
 
-        Box(modifier = Modifier.padding(innerPadding)) {
-            when (articlesState) {
-                is AsyncValue.Loading -> LoadingBody()
-                is AsyncValue.Error -> ErrorBody(articlesState.requireError)
-                is AsyncValue.Data -> NewsListBody(articlesState.requireValue, isRefreshing, onRefresh = {
-                    scope.launch {
-                        viewModel.refreshTopHeadlines()
-                    }
-                })
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            articleList.loadState.apply {
+                if (refresh is LoadState.Loading) {
+                    LoadingBody()
+                } else if (refresh is LoadState.Error) {
+                    ErrorBody((refresh as LoadState.Error).error)
+                }
             }
+            TopHeadlinesListBody(articleList)
         }
+
+//        val articlesState by viewModel.articlesState.collectAsState()
+//        val isRefreshing by viewModel.isRefresh
+//
+//        Box(modifier = Modifier.padding(innerPadding)) {
+//            when (articlesState) {
+//                is AsyncValue.Loading -> LoadingBody()
+//                is AsyncValue.Error -> ErrorBody(articlesState.requireError)
+//                is AsyncValue.Data -> NewsListBody(articlesState.requireValue, isRefreshing, onRefresh = {
+//                    scope.launch {
+//                        viewModel.refreshTopHeadlines()
+//                    }
+//                })
+//            }
+//        }
     }
 }
 
 @Composable
-fun LoadingBody() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+fun TopHeadlinesListBody(
+    articleList: LazyPagingItems<Article>,
+    lazyListState: LazyListState = rememberLazyListState()
+) {
+    LazyColumn(
+        state = lazyListState,
+        modifier = Modifier
+            .fillMaxSize(),
     ) {
-        CircularProgressIndicator(modifier = Modifier.fillMaxWidth(.2f))
+        items(
+            count = articleList.itemCount,
+            key = articleList.itemKey { it.url }
+        ) { index ->
+            articleList[index]?.let {
+                ArticleItem(it)
+            }
+        }
+        articleList.loadState.apply {
+            when {
+                append is LoadState.Loading -> item { LoadMoreFooter() }
+                refresh is LoadState.NotLoading && append is LoadState.NotLoading -> item { NoMoreFooter() }
+            }
+        }
     }
+
 }
 
-/// todo paging3
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsListBody(
@@ -238,32 +270,6 @@ fun ArticleItem(article: Article) {
     }
 }
 
-@Composable
-fun ErrorBody(throwable: Throwable) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Image(
-            painter = painterResource(id = android.R.drawable.ic_delete),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(.3f),
-        )
-        Text(
-            text = throwable.message ?: "Unknown Error",
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-        )
-    }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun LoadingBodyPreview() {
-    LoadingBody()
-}
-
 @Preview(showBackground = true)
 @Composable
 fun ArticleItemPreview() {
@@ -275,13 +281,7 @@ fun ArticleItemPreview() {
             url = "",
             imageUrl = "",
             date = "Today",
+            content = ""
         )
     )
 }
-
-@Preview(showSystemUi = true)
-@Composable
-fun ErrorBodyPreview() {
-    ErrorBody(Exception("Preview"))
-}
-
