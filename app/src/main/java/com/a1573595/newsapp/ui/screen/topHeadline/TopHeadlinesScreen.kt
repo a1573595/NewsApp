@@ -24,7 +24,6 @@ import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
@@ -58,12 +57,11 @@ import com.a1573595.newsapp.ui.component.NoMoreFooter
 import com.a1573595.newsapp.ui.component.ErrorBody
 import com.a1573595.newsapp.ui.component.LoadMoreFooter
 import com.a1573595.newsapp.ui.component.LoadingBody
-import com.a1573595.newsapp.ui.screen.NewsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopHeadlinesScreen(
-    viewModel: NewsViewModel = hiltViewModel()
+    viewModel: TopHeadlineViewModel = hiltViewModel()
 ) {
     Column {
         TopAppBar(
@@ -146,7 +144,6 @@ fun TopHeadlinesListBody(
             }
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

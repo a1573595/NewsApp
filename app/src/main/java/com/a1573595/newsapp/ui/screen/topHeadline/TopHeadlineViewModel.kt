@@ -1,18 +1,17 @@
-package com.a1573595.newsapp.ui.screen
+package com.a1573595.newsapp.ui.screen.topHeadline
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.a1573595.newsapp.domain.usecase.TopHeadlineUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NewsViewModel @Inject constructor(
-    private val articleUseCase: TopHeadlineUseCase
+class TopHeadlineViewModel @Inject constructor(
+    private val topHeadlineUseCase: TopHeadlineUseCase
 ) : ViewModel() {
-    val articlePagingData = articleUseCase().cachedIn(viewModelScope)
+    val articlePagingData = topHeadlineUseCase().cachedIn(viewModelScope)
 
 //    private val _articlesState: MutableStateFlow<AsyncValue<List<Article>>> =
 //        MutableStateFlow(AsyncValue.Loading)
@@ -28,13 +27,13 @@ class NewsViewModel @Inject constructor(
 //    }
 //
 //    private fun getTopHeadlines() = viewModelScope.launch {
-//        articleUseCase.getTopHeadlines().collect {
+//        topHeadlineUseCase.getTopHeadlines().collect {
 //            _articlesState.value = it
 //        }
 //    }
 //
 //    fun refreshTopHeadlines() = viewModelScope.launch {
-//        articleUseCase.getTopHeadlines().collect {
+//        topHeadlineUseCase.getTopHeadlines().collect {
 //            _isRefresh.value = true
 ////            delay(2000)
 //

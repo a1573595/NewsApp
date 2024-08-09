@@ -3,6 +3,7 @@ package com.a1573595.newsapp.ui
 import androidx.compose.ui.unit.dp
 
 object Dimens {
+    val dp1 = 1.dp
     val dp2 = 2.dp
     val dp4 = 4.dp
     val dp8 = 8.dp

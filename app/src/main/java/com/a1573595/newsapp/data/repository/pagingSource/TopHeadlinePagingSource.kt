@@ -5,7 +5,7 @@ import androidx.paging.PagingState
 import com.a1573595.newsapp.data.model.ArticleRaw
 import com.a1573595.newsapp.data.network.NewsApi
 
-class ArticleRawPagingSource(
+class TopHeadlinePagingSource(
     private val newsApi: NewsApi,
 ) : PagingSource<Int, ArticleRaw>() {
     override fun getRefreshKey(state: PagingState<Int, ArticleRaw>): Int? {

@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class TopHeadlineUseCase @Inject constructor(
+class EverythingUseCase @Inject constructor(
     private val newsRepository: NewsRepository
 ) {
-    operator fun invoke(): Flow<PagingData<Article>> = newsRepository.getTopHeadlineList()
+    operator fun invoke(query: String): Flow<PagingData<Article>> = newsRepository.getEverythingList(query)
         .map { pagingData -> pagingData.map { raw -> Article.fromRaw(raw) } }
         .flowOn(Dispatchers.IO)
 }
