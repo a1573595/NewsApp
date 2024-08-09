@@ -4,8 +4,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,8 +28,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -36,15 +40,16 @@ import androidx.paging.compose.itemKey
 import com.a1573595.newsapp.R
 import com.a1573595.newsapp.domain.model.Article
 import com.a1573595.newsapp.ui.Dimens
+import com.a1573595.newsapp.ui.component.ArticleItem
 import com.a1573595.newsapp.ui.component.ErrorBody
 import com.a1573595.newsapp.ui.component.LoadMoreFooter
 import com.a1573595.newsapp.ui.component.LoadingBody
 import com.a1573595.newsapp.ui.component.NoMoreFooter
-import com.a1573595.newsapp.ui.screen.topHeadline.ArticleItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
+    onArticleItemClick: (Article) -> Unit,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     Column(
@@ -67,6 +72,7 @@ fun SearchScreen(
                 viewModel.searchNews()
             }
         )
+        Spacer(modifier = Modifier.height(Dimens.dp16))
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -80,7 +86,7 @@ fun SearchScreen(
                         ErrorBody((refresh as LoadState.Error).error)
                     }
                 }
-                SearchListBody(articleList)
+                SearchListBody(articleList, onArticleItemClick)
             }
         }
     }
@@ -95,6 +101,8 @@ fun TextFieldSearchBar(
     val interactionSource = remember {
         MutableInteractionSource()
     }
+
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     TextField(
         interactionSource = interactionSource,
@@ -136,6 +144,7 @@ fun TextFieldSearchBar(
         ),
         keyboardActions = KeyboardActions(
             onSearch = {
+                keyboardController?.hide()
                 onSearch()
             }
         ),
@@ -145,6 +154,7 @@ fun TextFieldSearchBar(
 @Composable
 fun SearchListBody(
     articleList: LazyPagingItems<Article>,
+    onArticleItemClick: (Article) -> Unit,
     lazyListState: LazyListState = rememberLazyListState()
 ) {
     LazyColumn(
@@ -157,7 +167,7 @@ fun SearchListBody(
             key = articleList.itemKey { it.url }
         ) { index ->
             articleList[index]?.let {
-                ArticleItem(it)
+                ArticleItem(it, onArticleItemClick)
             }
         }
         articleList.loadState.apply {
@@ -167,4 +177,14 @@ fun SearchListBody(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TextFieldSearchBarPreView() {
+    TextFieldSearchBar(
+        "SearchBar",
+        {},
+        {},
+    )
 }

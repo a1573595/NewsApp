@@ -1,10 +1,11 @@
 package com.a1573595.newsapp.domain.model
 
+import android.os.Parcelable
 import com.a1573595.newsapp.common.getDaysAgoString
 import com.a1573595.newsapp.data.model.ArticleRaw
-import kotlinx.serialization.Serializable
+import kotlinx.parcelize.Parcelize
 
-@Serializable
+@Parcelize
 data class Article(
     val author: String,
     val title: String,
@@ -13,7 +14,7 @@ data class Article(
     val imageUrl: String,
     val date: String,
     val content: String,
-) {
+) : Parcelable {
     companion object {
         fun fromRaw(articleRaw: ArticleRaw): Article {
             return Article(
