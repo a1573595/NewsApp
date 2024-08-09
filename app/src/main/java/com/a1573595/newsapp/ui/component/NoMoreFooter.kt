@@ -7,18 +7,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.a1573595.newsapp.R
+import com.a1573595.newsapp.ui.Dimens
 
 @Composable
 fun NoMoreFooter() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(Dimens.dp16),
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "No More",
+            text = stringResource(R.string.no_more),
             modifier = Modifier.align(Alignment.Center),
         )
     }

@@ -1,5 +1,7 @@
 package com.a1573595.newsapp.common
 
+import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -18,5 +20,21 @@ fun String.getDaysAgoString(): String {
         abs(days) > 1 -> "${abs(days)} days ago"
         abs(days) == 1 -> "Yesterday"
         else -> "Today"
+    }
+}
+
+fun NavHostController.safeNavigate(
+    route: String
+) {
+    if (currentDestination?.route !== route) {
+        navigate(route)
+    }
+}
+
+fun NavHostController.safeNavigate(
+    route: String, builder: NavOptionsBuilder.() -> Unit
+) {
+    if (currentDestination?.route !== route) {
+        navigate(route, builder)
     }
 }

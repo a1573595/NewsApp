@@ -1,4 +1,4 @@
-package com.a1573595.newsapp.ui.screen
+package com.a1573595.newsapp.ui.screen.topHeadline
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -41,48 +41,44 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
+import com.a1573595.newsapp.R
 import com.a1573595.newsapp.domain.model.Article
+import com.a1573595.newsapp.ui.Dimens
 import com.a1573595.newsapp.ui.component.NoMoreFooter
 import com.a1573595.newsapp.ui.component.ErrorBody
 import com.a1573595.newsapp.ui.component.LoadMoreFooter
 import com.a1573595.newsapp.ui.component.LoadingBody
+import com.a1573595.newsapp.ui.screen.NewsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopHeadlinesScreen(
     viewModel: NewsViewModel = hiltViewModel()
 ) {
-//    val scope = rememberCoroutineScope()
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        "Top Headlines",
-                        style = MaterialTheme.typography.headlineMedium,
-                    )
-                }
-            )
-        }
-    ) { innerPadding ->
-        val articleList = viewModel.articlePagingData.collectAsLazyPagingItems()
-
+    Column {
+        TopAppBar(
+            title = {
+                Text(
+                    stringResource(R.string.top_headlines),
+                    style = MaterialTheme.typography.headlineMedium,
+                )
+            }
+        )
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+            modifier = Modifier.fillMaxSize()
         ) {
+            val articleList = viewModel.articlePagingData.collectAsLazyPagingItems()
+
             articleList.loadState.apply {
                 if (refresh is LoadState.Loading) {
                     LoadingBody()
@@ -92,7 +88,22 @@ fun TopHeadlinesScreen(
             }
             TopHeadlinesListBody(articleList)
         }
+    }
 
+//    val scope = rememberCoroutineScope()
+//
+//    Scaffold(
+//        topBar = {
+//            TopAppBar(
+//                title = {
+//                    Text(
+//                        stringResource(R.string.top_headlines),
+//                        style = MaterialTheme.typography.headlineMedium,
+//                    )
+//                }
+//            )
+//        }
+//    ) { innerPadding ->
 //        val articlesState by viewModel.articlesState.collectAsState()
 //        val isRefreshing by viewModel.isRefresh
 //
@@ -107,7 +118,7 @@ fun TopHeadlinesScreen(
 //                })
 //            }
 //        }
-    }
+//    }
 }
 
 @Composable
@@ -187,9 +198,9 @@ fun ArticleItem(article: Article) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp)
+            .padding(Dimens.dp12)
             .clickable { expanded = !expanded },
-        shape = RoundedCornerShape(5.dp),
+        shape = RoundedCornerShape(Dimens.dp8),
     ) {
         Column(
             modifier = Modifier
@@ -210,22 +221,18 @@ fun ArticleItem(article: Article) {
                 text = article.author,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(
-                        horizontal = 8.dp
-                    ),
+                    .padding(horizontal = Dimens.dp8),
                 style = MaterialTheme.typography.titleMedium,
             )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(IntrinsicSize.Min)
-                    .padding(
-                        horizontal = 8.dp
-                    ),
+                    .padding(horizontal = Dimens.dp8),
             ) {
                 Box(
                     modifier = Modifier
-                        .width(4.dp)
+                        .width(Dimens.dp4)
                         .fillMaxHeight()
                         .align(Alignment.CenterVertically)
                         .background(MaterialTheme.colorScheme.primary)
@@ -234,7 +241,7 @@ fun ArticleItem(article: Article) {
                     text = article.title,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 8.dp),
+                        .padding(start = Dimens.dp8),
                     style = MaterialTheme.typography.titleMedium
                         .copy(
                             fontWeight = FontWeight.Bold,
@@ -249,8 +256,8 @@ fun ArticleItem(article: Article) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
-                            vertical = 12.dp,
-                            horizontal = 8.dp
+                            vertical = Dimens.dp12,
+                            horizontal = Dimens.dp8,
                         ),
                     style = MaterialTheme.typography.bodyMedium,
                 )
@@ -258,8 +265,8 @@ fun ArticleItem(article: Article) {
                 modifier = Modifier
                     .align(Alignment.End)
                     .padding(
-                        horizontal = 8.dp,
-                        vertical = 4.dp,
+                        horizontal = Dimens.dp8,
+                        vertical = Dimens.dp4,
                     ),
                 text = article.date,
                 style = MaterialTheme.typography.titleMedium.copy(

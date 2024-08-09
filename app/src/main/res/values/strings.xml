@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">NewsApp</string>
+    <string name="search">Search</string>
+    <string name="top">Top</string>
+    <string name="top_headlines">Top Headlines</string>
+    <string name="no_more">No More</string>
 </resources>

@@ -1,9 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    id("com.google.dagger.hilt.android") version "2.51.1" apply false
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.0"
+    alias(libs.plugins.google.dagger.hilt.android)
+    alias(libs.plugins.jetbrains.android)
+    alias(libs.plugins.jetbrains.compose.compiler)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
     id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
 }
