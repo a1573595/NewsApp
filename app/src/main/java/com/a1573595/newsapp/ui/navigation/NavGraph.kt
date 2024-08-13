@@ -15,27 +15,35 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.a1573595.newsapp.domain.model.Article
+import com.a1573595.newsapp.ui.screen.ScreensNavigator
 import com.a1573595.newsapp.ui.screen.detail.DetailScreen
 import com.a1573595.newsapp.ui.screen.detail.DetailViewModel
 import com.a1573595.newsapp.ui.screen.favorite.FavoriteScreen
 import com.a1573595.newsapp.ui.screen.search.SearchScreen
 import com.a1573595.newsapp.ui.screen.topHeadline.TopHeadlinesScreen
+import com.hitrust.oobdemo.common.base64.Base64EncodeDecode.encodeToBase64
+import com.squareup.moshi.Moshi
 
 @Composable
 fun NavGraph() {
+    val screensNavigator = remember { ScreensNavigator() }
     val navController = rememberNavController()
-    val backStackState = navController.currentBackStackEntryAsState().value
+    screensNavigator.setParentNavController(navController)
 
-    val isBottomBarVisible = remember(key1 = backStackState) {
-        backStackState?.destination?.route == NavRoute.TopHeadline.route ||
-                backStackState?.destination?.route == NavRoute.Search.route ||
-                backStackState?.destination?.route == NavRoute.Favorite.route
-    }
+//    val backStackState = navController.currentBackStackEntryAsState().value
+//
+    val isBottomBarVisible = true
+//    remember(key1 = backStackState) {
+//        backStackState?.destination?.route == NavRoute.TopHeadline.route ||
+//                backStackState?.destination?.route == NavRoute.Search.route ||
+//                backStackState?.destination?.route == NavRoute.Favorite.route
+//    }
 
     val onArticleItemClick: (Article) -> Unit = {
-        navController.currentBackStackEntry?.savedStateHandle?.set("article", it)
+        screensNavigator.toRoute(NavRoute.Detail(Moshi.Builder().build().adapter(Article::class.java).toJson(it).encodeToBase64()))
+//        navController.currentBackStackEntry?.savedStateHandle?.set("article", it)
         /// Null
-        navController.navigate(NavRoute.Detail.route)
+//        navController.navigate(NavRoute.Detail.route)
 
 //        /// java.lang.IllegalArgumentException: Navigation destination that matches request NavDeepLinkRequest
 //        navController.navigate(NavRoute.Detail.passArticle(it))
@@ -73,14 +81,13 @@ fun NavGraph() {
                 FavoriteScreen(onArticleItemClick = onArticleItemClick)
             }
             composable(
-                NavRoute.Detail.route,
-                arguments = listOf(
-                    navArgument("article") {
-                        type = NavType.ParcelableType(Article::class.java)
-                    },
-                )
+                NavRoute.Detail().route,
             ) {
-                DetailScreen(onBackClick = { navController.navigateUp() })
+                val articleJsonString = remember {
+                    (screensNavigator.currentRoute.value as NavRoute.Detail).articleJsonString
+                }
+                val article = Moshi.Builder().build().adapter(Article::class.java).fromJson(articleJsonString)
+                DetailScreen(onBackClick = { navController.navigateUp() }, article = article!!)
             }
         }
     }

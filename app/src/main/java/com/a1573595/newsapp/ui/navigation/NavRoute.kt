@@ -6,8 +6,14 @@ sealed class NavRoute(val route: String) {
     data object TopHeadline : NavRoute("topHeadline")
     data object Search : NavRoute("search")
     data object Favorite : NavRoute("favorite")
-    data object Detail : NavRoute("detail")
+    data class Detail(
+        val articleJsonString: String = ""
+    ) : NavRoute("detail/{article}"){
+        override val navCommand: String
+            get() = route.replace("{article}", articleJsonString)
+    }
 
+    open val navCommand = route
 //    data object Detail : NavRoute("DetailsScreen/{article}") {
 //        fun passArticle(article: Article): String {
 //            return this.route.replace(oldValue = "{article}", newValue = article.toString())

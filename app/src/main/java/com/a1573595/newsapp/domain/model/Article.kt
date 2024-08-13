@@ -5,10 +5,12 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.a1573595.newsapp.common.getDaysAgoString
 import com.a1573595.newsapp.data.model.ArticleRaw
+import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
 
 @Entity
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class Article(
     val author: String,
     val title: String,

@@ -25,8 +25,7 @@ class DetailViewModel @Inject constructor(
         DetailState(
             isFavorite = false,
             article =
-            handle.get<Article>("article")
-                ?: Article(
+            Article(
                     "", "", "", "", "", "", ""
                 ),
         ),
