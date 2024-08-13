@@ -6,7 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -15,6 +16,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -48,9 +50,11 @@ fun BottomNavigationBar(
                 it.route == NavRoute.TopHeadline.route
             } == true,
             icon = {
-                Column {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Icon(
-                        Icons.Filled.Star,
+                        Icons.Outlined.StarOutline,
                         contentDescription = null,
                     )
                     Spacer(
@@ -72,7 +76,9 @@ fun BottomNavigationBar(
                 it.route == NavRoute.Search.route
             } == true,
             icon = {
-                Column {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Icon(
                         Icons.Filled.Search,
                         contentDescription = null,
@@ -88,6 +94,32 @@ fun BottomNavigationBar(
             },
             onClick = {
                 navController.safeNavigate(NavRoute.Search.route)
+            },
+        )
+        NavigationBarItem(
+            colors = colors,
+            selected = currentDestination?.hierarchy?.any {
+                it.route == NavRoute.Favorite.route
+            } == true,
+            icon = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        Icons.Outlined.FavoriteBorder,
+                        contentDescription = null,
+                    )
+                    Spacer(
+                        modifier = Modifier.height(Dimens.dp4)
+                    )
+                    Text(
+                        stringResource(R.string.favorite),
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                }
+            },
+            onClick = {
+                navController.safeNavigate(NavRoute.Favorite.route)
             },
         )
     }

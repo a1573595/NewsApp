@@ -1,16 +1,19 @@
 package com.a1573595.newsapp.domain.model
 
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.a1573595.newsapp.common.getDaysAgoString
 import com.a1573595.newsapp.data.model.ArticleRaw
 import kotlinx.parcelize.Parcelize
 
+@Entity
 @Parcelize
 data class Article(
     val author: String,
     val title: String,
     val description: String,
-    val url: String,
+    @PrimaryKey val url: String,
     val imageUrl: String,
     val date: String,
     val content: String,

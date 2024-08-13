@@ -8,12 +8,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.a1573595.newsapp.domain.model.Article
 import com.a1573595.newsapp.ui.screen.detail.DetailScreen
+import com.a1573595.newsapp.ui.screen.detail.DetailViewModel
+import com.a1573595.newsapp.ui.screen.favorite.FavoriteScreen
 import com.a1573595.newsapp.ui.screen.search.SearchScreen
 import com.a1573595.newsapp.ui.screen.topHeadline.TopHeadlinesScreen
 
@@ -23,7 +27,21 @@ fun NavGraph() {
     val backStackState = navController.currentBackStackEntryAsState().value
 
     val isBottomBarVisible = remember(key1 = backStackState) {
-        backStackState?.destination?.route == NavRoute.TopHeadline.route || backStackState?.destination?.route == NavRoute.Search.route
+        backStackState?.destination?.route == NavRoute.TopHeadline.route ||
+                backStackState?.destination?.route == NavRoute.Search.route ||
+                backStackState?.destination?.route == NavRoute.Favorite.route
+    }
+
+    val onArticleItemClick: (Article) -> Unit = {
+        navController.currentBackStackEntry?.savedStateHandle?.set("article", it)
+        /// Null
+        navController.navigate(NavRoute.Detail.route)
+
+//        /// java.lang.IllegalArgumentException: Navigation destination that matches request NavDeepLinkRequest
+//        navController.navigate(NavRoute.Detail.passArticle(it))
+//
+//        /// work
+//        navController.navigate(NavRoute.Detail.passArticle(100))
     }
 
     Scaffold(
@@ -32,7 +50,6 @@ fun NavGraph() {
             if (isBottomBarVisible) {
                 BottomNavigationBar(navController)
             }
-
         },
     ) { innerPadding ->
         NavHost(
@@ -47,22 +64,23 @@ fun NavGraph() {
             popExitTransition = { ExitTransition.None },
         ) {
             composable(NavRoute.TopHeadline.route) {
-                TopHeadlinesScreen(onArticleItemClick = {
-                    navController.currentBackStackEntry?.savedStateHandle?.set("article", it)
-                    navController.navigate(NavRoute.Detail.route)
-                })
+                TopHeadlinesScreen(onArticleItemClick = onArticleItemClick)
             }
             composable(NavRoute.Search.route) {
-                SearchScreen(onArticleItemClick = {
-                    navController.currentBackStackEntry?.savedStateHandle?.set("article", it)
-                    navController.navigate(NavRoute.Detail.route)
-                })
+                SearchScreen(onArticleItemClick = onArticleItemClick)
             }
-            composable(NavRoute.Detail.route) {
-                navController.previousBackStackEntry?.savedStateHandle?.get<Article?>("article")
-                    ?.let {
-                        DetailScreen(article = it) { navController.navigateUp() }
-                    }
+            composable(NavRoute.Favorite.route) {
+                FavoriteScreen(onArticleItemClick = onArticleItemClick)
+            }
+            composable(
+                NavRoute.Detail.route,
+                arguments = listOf(
+                    navArgument("article") {
+                        type = NavType.ParcelableType(Article::class.java)
+                    },
+                )
+            ) {
+                DetailScreen(onBackClick = { navController.navigateUp() })
             }
         }
     }

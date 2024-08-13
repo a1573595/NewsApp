@@ -10,7 +10,7 @@ interface NewsApi {
     @GET("top-headlines")
     suspend fun getTopHeadlines(
         @Query("page") page: Int,
-        @Query("pageSize") pageSize: Int = 30,
+        @Query("pageSize") pageSize: Int,
         @Query("sources") sources: String = "abc-news, bbc-news, cbs-news, cnn, fox-news",
         @Query("sortBy") sortBy: String? = "publishedAt",
         @Query("apiKey") apiKey: String = Constants.API_KEY,
@@ -20,7 +20,7 @@ interface NewsApi {
     suspend fun getEverything(
         @Query("q") query: String?,
         @Query("page") page: Int,
-        @Query("pageSize") pageSize: Int = 30,
+        @Query("pageSize") pageSize: Int,
         @Query("sources") sources: String = "abc-news, bbc-news, cbs-news, cnn, fox-news",
         @Query("sortBy") sortBy: String? = "publishedAt",
         @Query("apiKey") apiKey: String = Constants.API_KEY,

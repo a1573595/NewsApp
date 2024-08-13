@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Image
@@ -28,27 +29,36 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.a1573595.newsapp.domain.model.Article
 import com.a1573595.newsapp.ui.Dimens
+import com.a1573595.newsapp.ui.screen.detail.bean.DetailEvent
+import com.a1573595.newsapp.ui.screen.detail.bean.DetailState
 
 @Composable
 fun DetailScreen(
-    article: Article,
+    viewModel: DetailViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
-//    viewModel: DetailViewModel = hiltViewModel()
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        DetailAppBar(article, onBackClick)
+        val detailState = viewModel.state.value
+
+        DetailAppBar(
+            detailState,
+            onBackClick,
+            onFavoriteClick = {
+                viewModel.onEvent(DetailEvent.UpdateFavorite)
+            },
+        )
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(Dimens.dp16)
         ) {
             item {
                 AsyncImage(
-                    model = article.imageUrl,
+                    model = detailState.article.imageUrl,
                     contentDescription = null,
                     contentScale = ContentScale.Fit,
                     modifier = Modifier
@@ -59,19 +69,19 @@ fun DetailScreen(
                 )
                 Spacer(modifier = Modifier.height(Dimens.dp16))
                 Text(
-                    text = article.author,
+                    text = detailState.article.author,
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Spacer(modifier = Modifier.height(Dimens.dp8))
                 Text(
-                    text = article.title,
+                    text = detailState.article.title,
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.headlineSmall,
                 )
                 Spacer(modifier = Modifier.height(Dimens.dp16))
                 Text(
-                    text = article.content,
+                    text = detailState.article.content,
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.bodyLarge,
                 )
@@ -83,8 +93,9 @@ fun DetailScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailAppBar(
-    article: Article,
+    detailState: DetailState,
     onBackClick: () -> Unit,
+    onFavoriteClick: () -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -99,18 +110,15 @@ fun DetailAppBar(
         },
         title = {},
         actions = {
-            IconButton(onClick = {
-                /// todo add favorite
-            }) {
+            IconButton(onClick = onFavoriteClick) {
                 Icon(
-//                    Icons.Filled.Favorite,
-                    Icons.Outlined.FavoriteBorder,
-                    contentDescription = null
+                    if (detailState.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                    contentDescription = null,
                 )
             }
             IconButton(onClick = {
                 Intent(Intent.ACTION_SEND).also {
-                    it.putExtra(Intent.EXTRA_TEXT, article.url)
+                    it.putExtra(Intent.EXTRA_TEXT, detailState.article.url)
                     it.type = "text/plain"
                     if (it.resolveActivity(context.packageManager) != null) {
                         context.startActivity(it)
@@ -124,7 +132,7 @@ fun DetailAppBar(
             }
             IconButton(onClick = {
                 Intent(Intent.ACTION_VIEW).also {
-                    it.data = Uri.parse(article.url)
+                    it.data = Uri.parse(detailState.article.url)
                     if (it.resolveActivity(context.packageManager) != null) {
                         context.startActivity(it)
                     }

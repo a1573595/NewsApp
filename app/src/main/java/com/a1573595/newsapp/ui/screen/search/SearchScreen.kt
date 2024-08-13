@@ -50,7 +50,7 @@ import com.a1573595.newsapp.ui.component.NoMoreFooter
 @Composable
 fun SearchScreen(
     onArticleItemClick: (Article) -> Unit,
-    viewModel: SearchViewModel = hiltViewModel()
+    viewModel: SearchViewModel = hiltViewModel(),
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
