@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.a1573595.newsapp.common.Base64EncodeDecode.decodeFromBase64
+import com.a1573595.newsapp.common.jsonToObject
 import com.a1573595.newsapp.domain.model.Article
 import com.a1573595.newsapp.domain.usecase.FavoriteUseCase
 import com.a1573595.newsapp.ui.screen.detail.bean.DetailEvent
@@ -24,7 +25,7 @@ class DetailViewModel @Inject constructor(
         DetailState(
             isFavorite = false,
             article = handle.get<String>("article")!!.decodeFromBase64().let {
-                Moshi.Builder().build().adapter(Article::class.java).fromJson(it)!!
+                Moshi.Builder().build().jsonToObject<Article>(it)!!
             }
         ),
     )

@@ -2,6 +2,7 @@ package com.a1573595.newsapp.common
 
 import androidx.navigation.NavHostController
 import androidx.navigation.navOptions
+import com.squareup.moshi.Moshi
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -22,6 +23,12 @@ fun String.getDaysAgoString(): String {
         else -> "Today"
     }
 }
+
+inline fun <reified T> Moshi.objectToJson(data: T): String =
+    adapter(T::class.java).toJson(data)
+
+inline fun <reified T> Moshi.jsonToObject(json: String): T? =
+    adapter(T::class.java).fromJson(json)
 
 fun NavHostController.safeNavigate(
     route: String,

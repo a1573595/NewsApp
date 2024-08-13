@@ -31,7 +31,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.a1573595.newsapp.domain.model.Article
 import com.a1573595.newsapp.ui.Dimens
 import com.a1573595.newsapp.ui.screen.detail.bean.DetailEvent
 import com.a1573595.newsapp.ui.screen.detail.bean.DetailState
