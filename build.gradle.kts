@@ -2,7 +2,6 @@
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.google.dagger.hilt.android) apply false
-    alias(libs.plugins.jetbrains.compose.compiler) apply false
     alias(libs.plugins.jetbrains.android) apply false
-    id("com.android.library") version "8.0.2" apply false
+    alias(libs.plugins.devtools.ksp) apply false
 }

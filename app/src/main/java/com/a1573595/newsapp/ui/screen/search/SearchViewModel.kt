@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val everythingUseCase: EverythingUseCase
+    private val everythingUseCase: EverythingUseCase,
 ) : ViewModel() {
     private val _query = mutableStateOf("")
 

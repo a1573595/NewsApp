@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TopHeadlineViewModel @Inject constructor(
-    private val topHeadlineUseCase: TopHeadlineUseCase
+    private val topHeadlineUseCase: TopHeadlineUseCase,
 ) : ViewModel() {
     val articlePagingData = topHeadlineUseCase().cachedIn(viewModelScope)
 

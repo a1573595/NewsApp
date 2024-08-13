@@ -36,7 +36,7 @@ import com.a1573595.newsapp.ui.component.LoadingBody
 @Composable
 fun TopHeadlinesScreen(
     onArticleItemClick: (Article) -> Unit,
-    viewModel: TopHeadlineViewModel = hiltViewModel()
+    viewModel: TopHeadlineViewModel = hiltViewModel(),
 ) {
     Column {
         TopAppBar(
