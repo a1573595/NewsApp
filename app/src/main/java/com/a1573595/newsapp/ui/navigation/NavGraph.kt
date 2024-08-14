@@ -48,9 +48,9 @@ fun NavGraph() {
             navController = navController,
             startDestination = NavRoute.TopHeadline.route,
 //            enterTransition = { EnterTransition.None },
-            popEnterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None },
-            popExitTransition = { ExitTransition.None },
+//            popEnterTransition = { EnterTransition.None },
+//            exitTransition = { ExitTransition.None },
+//            popExitTransition = { ExitTransition.None },
         ) {
             composable(NavRoute.TopHeadline.route) {
                 TopHeadlinesScreen(onArticleItemClick = onArticleItemClick)

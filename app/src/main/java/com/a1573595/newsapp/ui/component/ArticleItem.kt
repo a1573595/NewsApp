@@ -3,6 +3,7 @@ package com.a1573595.newsapp.ui.component
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -27,6 +28,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
@@ -50,8 +52,8 @@ fun ArticleItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(Dimens.dp12)
-            .clickable { expanded = !expanded },
-        shape = RoundedCornerShape(Dimens.dp8),
+            .clickable { expanded = !expanded }
+            .clip(RoundedCornerShape(Dimens.dp8)),
     ) {
         Column(
             modifier = Modifier
@@ -62,19 +64,13 @@ fun ArticleItem(
             AsyncImage(
                 model = article.imageUrl,
                 contentDescription = null,
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .aspectRatio(16f / 9f)
                     .fillMaxWidth(),
                 placeholder = rememberVectorPainter(image = Icons.Outlined.Image),
             )
-            Text(
-                text = article.author,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = Dimens.dp8),
-                style = MaterialTheme.typography.titleMedium,
-            )
+            Spacer(modifier = Modifier.height(Dimens.dp8))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -102,7 +98,7 @@ fun ArticleItem(
                 )
             }
             Spacer(modifier = Modifier.height(Dimens.dp12))
-            if (expanded)
+            if (expanded) {
                 Text(
                     text = article.description,
                     modifier = Modifier
@@ -110,9 +106,7 @@ fun ArticleItem(
                         .padding(horizontal = Dimens.dp8),
                     style = MaterialTheme.typography.bodyMedium,
                 )
-            if (expanded)
                 Spacer(modifier = Modifier.height(Dimens.dp24))
-            if (expanded)
                 Text(
                     modifier = Modifier
                         .align(Alignment.End)
@@ -123,21 +117,30 @@ fun ArticleItem(
                             onArticleItemClick(article)
                         },
                     text = stringResource(R.string.read_more),
-                    style = MaterialTheme.typography.bodyLarge.copy(
+                    style = MaterialTheme.typography.titleMedium.copy(
                         color = MaterialTheme.colorScheme.primary
                     ),
                 )
-            Spacer(modifier = Modifier.height(Dimens.dp4))
-            Text(
+            }
+            Spacer(modifier = Modifier.height(if (expanded) Dimens.dp16 else Dimens.dp4))
+            Row(
                 modifier = Modifier
-                    .align(Alignment.End)
+                    .fillMaxWidth()
                     .padding(horizontal = Dimens.dp8),
-                text = article.date,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = Color.Gray
-                ),
-            )
-            Spacer(modifier = Modifier.height(Dimens.dp4))
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = article.author,
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Text(
+                    text = article.date,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = Color.Gray
+                    ),
+                )
+            }
+            Spacer(modifier = Modifier.height(Dimens.dp8))
         }
     }
 }
