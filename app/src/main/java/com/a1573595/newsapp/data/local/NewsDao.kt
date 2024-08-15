@@ -12,7 +12,7 @@ interface NewsDao {
     @Query("SELECT * FROM Article WHERE url=:url")
     suspend fun getArticle(url: String): Article?
 
-    @Query("SELECT * FROM Article")
+    @Query("SELECT * FROM Article Order By rowid DESC")
     fun getArticleList(): Flow<List<Article>>
 
     @Upsert

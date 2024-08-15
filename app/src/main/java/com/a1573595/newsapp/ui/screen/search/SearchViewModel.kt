@@ -29,11 +29,10 @@ class SearchViewModel @Inject constructor(
     }
 
     fun searchNews() {
-        if(_query.value.isNotEmpty()) {
-            val articlePagingData = everythingUseCase(
+        if (_query.value.isNotEmpty()) {
+            _articlePagingData.value = everythingUseCase(
                 query = _query.value,
             ).cachedIn(viewModelScope)
-            _articlePagingData.value = articlePagingData
         } else {
             _articlePagingData.value = null
         }
