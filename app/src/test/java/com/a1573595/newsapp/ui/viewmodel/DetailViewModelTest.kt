@@ -1,6 +1,5 @@
 package com.a1573595.newsapp.ui.viewmodel
 
-import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
 import com.a1573595.newsapp.common.Base64EncodeDecode
@@ -12,10 +11,8 @@ import com.a1573595.newsapp.domain.usecase.FavoriteUseCase
 import com.a1573595.newsapp.ui.screen.detail.DetailViewModel
 import com.a1573595.newsapp.ui.screen.detail.bean.DetailEvent
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
-import io.mockk.mockkStatic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

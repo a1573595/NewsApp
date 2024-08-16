@@ -38,6 +38,7 @@ class SearchViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
+
         everythingUseCase = mockk()
 
         viewModel = SearchViewModel(everythingUseCase)
@@ -50,26 +51,26 @@ class SearchViewModelTest {
 
     @Test
     fun `test updateQuery`() = runTest {
-        val query = "test"
+        val expectedResult = "test"
 
-        viewModel.updateQuery(query)
+        viewModel.updateQuery(expectedResult)
 
-        assertEquals(query, viewModel.query.value)
+        assertEquals(expectedResult, viewModel.query.value)
     }
 
     @Test
     fun `test searchNews`() = runTest {
-        val query = "test"
-        val mockData = PagingData.from(listOf(fakeArticle))
+        val expectedResult = listOf(fakeArticle)
+        val fakeData = PagingData.from(listOf(fakeArticle))
         val differ = AsyncPagingDataDiffer<Article>(
             diffCallback = ArticleDiffCallback(),
             updateCallback = NoopListCallback(),
             workerDispatcher = testDispatcher,
         )
 
-        coEvery { everythingUseCase(query) } returns flowOf(mockData)
+        coEvery { everythingUseCase(any()) } returns flowOf(fakeData)
 
-        viewModel.updateQuery(query)
+        viewModel.updateQuery("test")
         viewModel.searchNews()
 
         viewModel.articlePagingData.value?.test {
@@ -79,6 +80,30 @@ class SearchViewModelTest {
         // Advance the test dispatcher to allow the differ to process the data
         advanceUntilIdle()
 
-        assertEquals(listOf(fakeArticle), differ.snapshot().items)
+        assertEquals(expectedResult, differ.snapshot().items)
+    }
+
+    @Test
+    fun `test searchNews return empty`() = runTest {
+        val expectedResult = emptyList<Article>()
+        val fakeData = PagingData.from(listOf(fakeArticle))
+        val differ = AsyncPagingDataDiffer<Article>(
+            diffCallback = ArticleDiffCallback(),
+            updateCallback = NoopListCallback(),
+            workerDispatcher = testDispatcher,
+        )
+
+        coEvery { everythingUseCase(any()) } returns flowOf(fakeData)
+
+        viewModel.updateQuery("")
+        viewModel.searchNews()
+
+        viewModel.articlePagingData.value?.test {
+            differ.submitData(awaitItem())
+        }
+
+        advanceUntilIdle()
+
+        assertEquals(expectedResult, differ.snapshot().items)
     }
 }

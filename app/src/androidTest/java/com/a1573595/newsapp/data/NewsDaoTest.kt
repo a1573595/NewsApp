@@ -40,41 +40,46 @@ class NewsDaoTest {
 
     @Test
     fun test_getArticle() = runBlocking {
+        val expectedResult1 = fakeArticle1
+        val expectedResult2 = fakeArticle2
         addTwoItemToDb()
 
-        val article1 = newsDao.getArticle(fakeArticle1.url)
-        val article2 = newsDao.getArticle(fakeArticle2.url)
+        val actualResult1 = newsDao.getArticle(fakeArticle1.url)
+        val actualResult2 = newsDao.getArticle(fakeArticle2.url)
 
-        assertEquals(fakeArticle1, article1)
-        assertEquals(fakeArticle2, article2)
+        assertEquals(expectedResult1, actualResult1)
+        assertEquals(expectedResult2, actualResult2)
     }
 
     @Test
     fun test_getArticleList() = runBlocking {
+        val expectedResult = listOf(fakeArticle2, fakeArticle1)
         addTwoItemToDb()
 
-        val articleList = newsDao.getArticleList().first()
+        val actualResult = newsDao.getArticleList().first()
 
-        assertEquals(listOf(fakeArticle2, fakeArticle1), articleList)
+        assertEquals(expectedResult, actualResult)
     }
 
     @Test
     fun test_upsertArticle() = runBlocking {
+        val expectedResult = fakeArticle1
         addOneItemToDb()
 
-        val article = newsDao.getArticleList().first().first()
+        val actualResult = newsDao.getArticleList().first().first()
 
-        assertEquals(fakeArticle1, article)
+        assertEquals(expectedResult, actualResult)
     }
 
     @Test
     fun test_deleteArticle() = runBlocking {
+        val expectedResult = fakeArticle2
         addTwoItemToDb()
 
         newsDao.deleteArticle(fakeArticle1)
-        val article = newsDao.getArticleList().first().first()
+        val actualResult = newsDao.getArticleList().first().first()
 
-        assertEquals(fakeArticle2, article)
+        assertEquals(expectedResult, actualResult)
     }
 
     private suspend fun addOneItemToDb() = newsDao.upsertArticle(fakeArticle1)

@@ -2,7 +2,6 @@ package com.a1573595.newsapp.ui.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import app.cash.turbine.test
-import com.a1573595.newsapp.domain.model.Article
 import com.a1573595.newsapp.domain.model.fakeArticle
 import com.a1573595.newsapp.domain.usecase.FavoriteUseCase
 import com.a1573595.newsapp.ui.screen.favorite.FavoriteViewModel
@@ -33,8 +32,8 @@ class FavoriteViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        favoriteUseCase = mockk()
 
+        favoriteUseCase = mockk()
         coEvery { favoriteUseCase() } returns flowOf(listOf(fakeArticle))
 
         viewModel = FavoriteViewModel(favoriteUseCase)
@@ -47,10 +46,12 @@ class FavoriteViewModelTest {
 
     @Test
     fun `test articlesState emits ArticleList from useCase`() = runTest {
+        val expectedResult = listOf(fakeArticle)
+
         viewModel.articlesState.test {
             val emission = awaitItem()
 
-            assertEquals(listOf(fakeArticle), emission.value)
+            assertEquals(expectedResult, emission.value)
             cancelAndIgnoreRemainingEvents()
         }
     }

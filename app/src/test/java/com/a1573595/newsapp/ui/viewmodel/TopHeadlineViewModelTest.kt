@@ -38,8 +38,8 @@ class TopHeadlineViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        topHeadlineUseCase = mockk()
 
+        topHeadlineUseCase = mockk()
         coEvery { topHeadlineUseCase() } returns flowOf(PagingData.from(listOf(fakeArticle)))
 
         viewModel = TopHeadlineViewModel(topHeadlineUseCase)
@@ -52,6 +52,7 @@ class TopHeadlineViewModelTest {
 
     @Test
     fun `test articlePagingData emits PagingData from useCase`() = runTest {
+        val expectedResult = listOf(fakeArticle)
         val differ = AsyncPagingDataDiffer<Article>(
             diffCallback = ArticleDiffCallback(),
             updateCallback = NoopListCallback(),
@@ -65,6 +66,6 @@ class TopHeadlineViewModelTest {
         // Advance the test dispatcher to allow the differ to process the data
         advanceUntilIdle()
 
-        assertEquals(listOf(fakeArticle), differ.snapshot().items)
+        assertEquals(expectedResult, differ.snapshot().items)
     }
 }

@@ -6,7 +6,6 @@ import app.cash.turbine.test
 import com.a1573595.newsapp.data.local.NewsDao
 import com.a1573595.newsapp.data.model.NewsResponse
 import com.a1573595.newsapp.data.network.NewsApi
-import com.a1573595.newsapp.data.repository.NewsRepositoryImpl
 import com.a1573595.newsapp.domain.model.Article
 import com.a1573595.newsapp.domain.repository.NewsRepository
 import io.mockk.coEvery
@@ -36,47 +35,43 @@ class NewsRepositoryImplTest {
 
     @Test
     fun `test getTopHeadlines`() = runTest {
-        val page = 1
-        val pageSize = 30
-        val expectedResponse: Response<NewsResponse> = mockk()
+        val fakeResponse: Response<NewsResponse> = mockk()
+        val expectedResult = emptyList<Article>()
 
-        coEvery { newsApi.getTopHeadlines(page, pageSize) } returns expectedResponse
+        coEvery { newsApi.getTopHeadlines(any(), any()) } returns fakeResponse
 
-        val result = newsRepository.getTopHeadlineList()
-
-        result.test {
+        newsRepository.getTopHeadlineList().test {
             val emission = awaitItem()
 
-            val collectedArticles = mutableListOf<Article>()
+            val actualResult = mutableListOf<Article>()
             emission.map { article ->
-                collectedArticles.add(article)
+                actualResult.add(article)
             }
 
-            assertEquals(emptyList<Article>(), collectedArticles)
+            assertEquals(expectedResult, actualResult)
 //            cancelAndIgnoreRemainingEvents()
         }
     }
 
     @Test
     fun `test getArticle`() = runTest {
-        val url = "testUrl"
-        val expectedResponse: Article = mockk()
+        val expectedResult: Article = mockk()
 
-        coEvery { newsDao.getArticle(url) } returns expectedResponse
+        coEvery { newsDao.getArticle(any()) } returns expectedResult
 
-        val result = newsRepository.getArticle(url)
+        val actualResult = newsRepository.getArticle("")
 
-        assertEquals(expectedResponse, result)
+        assertEquals(expectedResult, actualResult)
     }
 
     @Test
     fun `test getArticleList`() {
-        val expectedResponse: Flow<List<Article>> = mockk()
+        val expectedResult: Flow<List<Article>> = mockk()
 
-        coEvery { newsDao.getArticleList() } returns expectedResponse
+        coEvery { newsDao.getArticleList() } returns expectedResult
 
-        val result = newsRepository.getArticleList()
+        val actualResult = newsRepository.getArticleList()
 
-        assertEquals(expectedResponse, result)
+        assertEquals(expectedResult, actualResult)
     }
 }
