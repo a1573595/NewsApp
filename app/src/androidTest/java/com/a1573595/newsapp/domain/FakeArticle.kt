@@ -8,7 +8,7 @@ val fakeArticle1 = Article(
     description = "Fake description1",
     url = "https://www.google1.com",
     imageUrl = "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp1.png",
-    date = "2024/08/08 06:00",
+    date = "Today",
     content = "Fake content1",
 )
 
@@ -18,6 +18,6 @@ val fakeArticle2 = Article(
     description = "Fake description2",
     url = "https://www.google2.com",
     imageUrl = "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp2.png",
-    date = "2024/08/08 06:00",
+    date = "Today",
     content = "Fake content2",
 )

@@ -5,8 +5,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.a1573595.newsapp.data.local.NewsDao
 import com.a1573595.newsapp.data.network.NewsApi
-import com.a1573595.newsapp.data.repository.pagingSource.EverythingPagingSource
-import com.a1573595.newsapp.data.repository.pagingSource.TopHeadlinePagingSource
+import com.a1573595.newsapp.data.repository.paging.EverythingPagingSource
+import com.a1573595.newsapp.data.repository.paging.TopHeadlinePagingSource
 import com.a1573595.newsapp.domain.model.Article
 import com.a1573595.newsapp.domain.repository.NewsRepository
 import kotlinx.coroutines.flow.Flow

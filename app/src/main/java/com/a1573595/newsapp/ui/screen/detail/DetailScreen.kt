@@ -60,7 +60,7 @@ fun DetailScreen(
                 AsyncImage(
                     model = detailState.article.imageUrl,
                     contentDescription = null,
-                    contentScale = ContentScale.Fit,
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .aspectRatio(16f / 9f)
                         .fillMaxWidth()

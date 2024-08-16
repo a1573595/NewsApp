@@ -130,9 +130,13 @@ fun ArticleItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
+                    modifier = Modifier.weight(1f),
                     text = article.author,
                     style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
+                Spacer(modifier = Modifier.width(Dimens.dp16))
                 Text(
                     text = article.date,
                     style = MaterialTheme.typography.titleMedium.copy(

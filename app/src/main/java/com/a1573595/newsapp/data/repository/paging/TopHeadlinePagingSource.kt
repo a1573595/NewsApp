@@ -1,4 +1,4 @@
-package com.a1573595.newsapp.data.repository.pagingSource
+package com.a1573595.newsapp.data.repository.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
