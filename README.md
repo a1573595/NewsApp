@@ -21,7 +21,7 @@ A news APP developed using Android and Jetpack Library.
   * [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel)
 * [Coil compose](https://coil-kt.github.io/coil/compose/)
 * [Coroutines](https://developer.android.com/kotlin/coroutines)
-* [Dragger](https://github.com/google/dagger)
+* [Dagger](https://github.com/google/dagger)
 * [Kotlin datetime](https://github.com/Kotlin/kotlinx-datetime)
 * [Kotlinx serialization](https://github.com/Kotlin/kotlinx.serialization)
 * [Material](https://m2.material.io/develop/android)
