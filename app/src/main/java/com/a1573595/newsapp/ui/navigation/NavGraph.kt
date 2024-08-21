@@ -2,6 +2,7 @@ package com.a1573595.newsapp.ui.navigation
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -33,18 +34,11 @@ fun NavGraph() {
         navController.navigate(NavRoute.Detail.passArticle(it))
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        bottomBar = {
-            if (isBottomBarVisible) {
-                BottomNavigationBar(navController)
-            }
-        },
-    ) { innerPadding ->
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
         NavHost(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+            modifier = Modifier.fillMaxSize().weight(1f),
             navController = navController,
             startDestination = NavRoute.TopHeadline.route,
 //            enterTransition = { EnterTransition.None },
@@ -61,9 +55,12 @@ fun NavGraph() {
             composable(NavRoute.Favorite.route) {
                 FavoriteScreen(onArticleItemClick = onArticleItemClick)
             }
-            composable(NavRoute.Detail.route,) {
+            composable(NavRoute.Detail.route) {
                 DetailScreen(onBackClick = { navController.navigateUp() })
             }
+        }
+        if (isBottomBarVisible) {
+            BottomNavigationBar(navController)
         }
     }
 }
