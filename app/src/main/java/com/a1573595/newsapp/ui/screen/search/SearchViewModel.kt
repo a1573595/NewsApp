@@ -1,5 +1,6 @@
 package com.a1573595.newsapp.ui.screen.search
 
+import androidx.collection.LruCache
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -24,17 +25,39 @@ class SearchViewModel @Inject constructor(
 
     val articlePagingData: State<Flow<PagingData<Article>>?> get() = _articlePagingData
 
+    private val _cachePagingData = LruCache<String, Flow<PagingData<Article>>>(10)
+
+    fun clearQuery() {
+        _query.value = ""
+    }
+
     fun updateQuery(value: String) {
         _query.value = value
     }
 
     fun searchNews() {
-        if (_query.value.isNotEmpty()) {
-            _articlePagingData.value = everythingUseCase(
-                query = _query.value,
-            ).cachedIn(viewModelScope)
+        val query = _query.value
+
+        if (query.isNotEmpty()) {
+            val cachePagingData = _cachePagingData[query]
+
+            if (cachePagingData != null) {
+                _articlePagingData.value = cachePagingData
+            } else {
+                everythingUseCase(
+                    query = query,
+                ).cachedIn(viewModelScope).let {
+                    _articlePagingData.value = it
+                    _cachePagingData.put(query, it)
+                }
+            }
         } else {
             _articlePagingData.value = null
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        _cachePagingData.evictAll()
     }
 }

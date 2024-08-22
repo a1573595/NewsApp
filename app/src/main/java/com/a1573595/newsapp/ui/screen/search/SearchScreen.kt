@@ -1,6 +1,7 @@
 package com.a1573595.newsapp.ui.screen.search
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,8 +17,12 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.VerticalAlignTop
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,7 +30,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -52,6 +60,16 @@ fun SearchScreen(
     onArticleItemClick: (Article) -> Unit,
     viewModel: SearchViewModel = hiltViewModel(),
 ) {
+    val scrollToTop = remember { mutableStateOf(false) }
+    val lazyListState: LazyListState = rememberLazyListState()
+
+    LaunchedEffect(key1 = scrollToTop.value) {
+        if (scrollToTop.value) {
+            scrollToTop.value = false
+            lazyListState.scrollToItem(0)
+        }
+    }
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -65,10 +83,14 @@ fun SearchScreen(
         )
         TextFieldSearchBar(
             viewModel.query.value,
+            onClear = {
+                viewModel.clearQuery()
+            },
             onValueChange = {
                 viewModel.updateQuery(it)
             },
             onSearch = {
+                scrollToTop.value = true
                 viewModel.searchNews()
             }
         )
@@ -86,7 +108,21 @@ fun SearchScreen(
                         ErrorBody((refresh as LoadState.Error).error)
                     }
                 }
-                SearchListBody(articleList, onArticleItemClick)
+                SearchListBody(lazyListState, articleList, onArticleItemClick)
+            }
+            FloatingActionButton(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(Dimens.dp32),
+                onClick = {
+                    scrollToTop.value = true
+                },
+            ) {
+                Icon(
+                    Icons.Filled.VerticalAlignTop,
+                    modifier = Modifier.size(Dimens.dp32),
+                    contentDescription = null,
+                )
             }
         }
     }
@@ -95,6 +131,7 @@ fun SearchScreen(
 @Composable
 fun TextFieldSearchBar(
     value: String,
+    onClear: () -> Unit,
     onValueChange: (String) -> Unit,
     onSearch: () -> Unit,
 ) {
@@ -131,6 +168,17 @@ fun TextFieldSearchBar(
                 contentDescription = null,
             )
         },
+        trailingIcon = {
+            if (value.isNotEmpty()) {
+                Icon(
+                    Icons.Filled.Clear,
+                    modifier = Modifier
+                        .size(Dimens.dp32)
+                        .clickable { onClear() },
+                    contentDescription = null,
+                )
+            }
+        },
         placeholder = {
             Text(
                 text = stringResource(R.string.query),
@@ -153,9 +201,9 @@ fun TextFieldSearchBar(
 
 @Composable
 fun SearchListBody(
+    lazyListState: LazyListState,
     articleList: LazyPagingItems<Article>,
     onArticleItemClick: (Article) -> Unit,
-    lazyListState: LazyListState = rememberLazyListState()
 ) {
     LazyColumn(
         state = lazyListState,
@@ -184,6 +232,7 @@ fun SearchListBody(
 fun TextFieldSearchBarPreView() {
     TextFieldSearchBar(
         "SearchBar",
+        {},
         {},
         {},
     )

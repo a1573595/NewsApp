@@ -11,6 +11,6 @@ import javax.inject.Inject
 class EverythingUseCase @Inject constructor(
     private val newsRepository: NewsRepository
 ) {
-    operator fun invoke(query: String): Flow<PagingData<Article>> = newsRepository.getEverythingList(query)
-        .flowOn(Dispatchers.IO)
+    operator fun invoke(query: String): Flow<PagingData<Article>> =
+        newsRepository.getEverythingList(query).flowOn(Dispatchers.IO)
 }

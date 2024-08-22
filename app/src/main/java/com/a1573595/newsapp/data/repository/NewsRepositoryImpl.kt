@@ -20,7 +20,7 @@ class NewsRepositoryImpl @Inject constructor(
         config = PagingConfig(pageSize = 30, prefetchDistance = 2),
         pagingSourceFactory = {
             TopHeadlinePagingSource(newsApi = newsApi)
-        }
+        },
     ).flow
 
     override fun getEverythingList(query: String): Flow<PagingData<Article>> = Pager(
@@ -30,7 +30,7 @@ class NewsRepositoryImpl @Inject constructor(
                 newsApi = newsApi,
                 query = query,
             )
-        }
+        },
     ).flow
 
     override suspend fun getArticle(url: String): Article? = newsDao.getArticle(url)
