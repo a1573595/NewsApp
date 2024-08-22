@@ -58,6 +58,7 @@ class SearchViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
+
         _cachePagingData.evictAll()
     }
 }

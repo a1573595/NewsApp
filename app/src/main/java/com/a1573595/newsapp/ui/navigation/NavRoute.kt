@@ -5,9 +5,7 @@ import com.a1573595.newsapp.domain.model.Article
 import kotlinx.serialization.json.Json
 
 sealed class NavRoute(val route: String) {
-    data object TopHeadline : NavRoute("topHeadline")
-    data object Search : NavRoute("search")
-    data object Favorite : NavRoute("favorite")
+    data object Home : NavRoute("home")
     data object Detail : NavRoute("detail/{article}") {
         fun passArticle(article: Article): String {
             return this.route.replace(
